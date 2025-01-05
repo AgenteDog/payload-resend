@@ -9,6 +9,8 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { ContactRequests } from './collections/ContactRequests'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +22,12 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  email: resendAdapter({
+    defaultFromName: 'Payload Example',
+    defaultFromAddress: process.env.FROM_EMAIL || '',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
+  collections: [Users, Media, ContactRequests],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
